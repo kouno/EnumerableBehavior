@@ -15,20 +15,26 @@
 /**
  * Enumerable Behavior is an easy way to manage tables which have only one purpose : replace database enumeration.
  *
- * The goal is to write less code with more meaning (even though it would be probably better to have support 
- * for real enum type).
+ * The goal is to write less code with more meaning. 
+ * 
+ * Even though it would be probably better to have support for real enum type, it is not supported in CakePHP 
+ * and it seems to be inconsistent between database.
  * 
  * <code>
  * <?php
+ * // Good
  * $this->AssociatedModel->enum(1); // return associated name to key 1.
  * $this->AssociatedModel->enum('name'); // return key 1.
  * $this->AssociatedModel->enumAll(); //return an associative array of all records.
+ * 
+ * // Bad
+ * $this->AssociatedModel->enum('1'); // will not work because '1' is a string
  * ?>
  * </code>
  * 
  * EnumerableBehavior have a few configuration options :
- * - fieldList : List of fields to be retrieved. (2 fields max)
- * - conditions : Normal find conditions.
+ * - fieldList : List of fields to be retrieved. (2 fields max) [required if no displayField have been set]
+ * - conditions : Normal find('list') conditions.
  * - cache : Enable cache.
  *
  * @package app
