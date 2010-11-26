@@ -1,0 +1,11 @@
+REQUIREMENTS
+
+- PHP >= 4
+- CakePHP >= 1.2
+
+INSTALL
+
+- Place EnumerableBehavior in your behaviors folder. Optionnally, you can also place the test case into his folder too.
+- Attach it to your model.
+- Enjoy :)
+
