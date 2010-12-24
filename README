@@ -3,9 +3,16 @@ REQUIREMENTS
 - PHP >= 4
 - CakePHP >= 1.2
 
+NOTES
+
+Enumerable is a CakePHP plugin.
+
 INSTALL
 
-- Place EnumerableBehavior in your behaviors folder. Optionnally, you can also place the test case into his folder too.
-- Attach it to your model.
-- Enjoy :)
+For those who use submodules in their Git repository:
+> cd app/plugins/
+> git clone <url_of_enumerable_behavior> enumerable
+> git submodule add enumerable
 
+Attach this behavior using:
+$actsAs = array('Enumerable.Enumerable');

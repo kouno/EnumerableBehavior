@@ -18,7 +18,7 @@
  * The goal is to write less code with more meaning. 
  * 
  * Even though it would be probably better to have support for real enum type, it is not supported in CakePHP 
- * and it seems to be inconsistent between database.
+ * and it seems to be inconsistent between databases.
  * 
  * <code>
  * <?php
@@ -35,7 +35,7 @@
  * EnumerableBehavior have a few configuration options :
  * - fieldList : List of fields to be retrieved. (2 fields max) [required if no displayField have been set]
  * - conditions : Normal find('list') conditions.
- * - cache : Enable cache.
+ * - cache : Enable cache. (use default)
  *
  * @package app
  * @subpackage app.models.behaviors

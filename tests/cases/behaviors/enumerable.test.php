@@ -10,8 +10,7 @@
  * @subpackage app.tests.cases.behaviors
  */
 
-App::import('Behavior', 'enumerable');
-App::import('Core', 'ConnectionManager');
+App::import('Behavior', 'Enumerable.Enumerable');
 
 /**
  * Basic model to load EnumBehavior
@@ -20,7 +19,7 @@ App::import('Core', 'ConnectionManager');
  * @subpackage app.tests.cases.behaviors
  */
 class EnumerableJob extends CakeTestModel {
-	public $actsAs = array('Enumerable');
+	public $actsAs = array('Enumerable.Enumerable');
 }
 
 /**
@@ -39,7 +38,7 @@ class EnumerableTestCase extends CakeTestCase {
 	 * @var mixed
 	 * @access public
 	 */
-	var $fixtures = array('app.enumerable_job');
+	var $fixtures = array('plugin.enumerable.enumerable_job');
 
 	function startCase() {
 		$this->Enum =& new EnumerableBehavior();
