@@ -112,7 +112,7 @@ class EnumerableBehavior extends ModelBehavior {
 	function enumAll(&$Model, $reset = false) {
 		if ($this->settings[$Model->alias]['cache'] && !$reset) {
 
-			$cached = Cache::read("{$this->name}.{$Model->alias}", $this->settings['cacheName']);
+			$cached = Cache::read("{$this->name}.{$Model->alias}", $this->settings[$Model->alias]['cacheName']);
 
 			if ($cached !== false) {
 				$this->__enum[$Model->alias] = $cached;
@@ -131,7 +131,7 @@ class EnumerableBehavior extends ModelBehavior {
 				Cache::write(
 					"{$this->name}.{$Model->alias}",
 					$this->__enum[$Model->alias],
-					$this->settings['cacheName']
+					$this->settings[$Model->alias]['cacheName']
 				);
 
 			}
@@ -183,7 +183,7 @@ class EnumerableBehavior extends ModelBehavior {
 	function _getKeys($alias, $values) {
 		$keys = array();
 		foreach($values as $value) {
-			$keys = $this->_getKey($value);
+			$keys[] = $this->_getKey($alias, $value);
 		}
 
 		return $keys;
