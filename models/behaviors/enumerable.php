@@ -26,6 +26,7 @@
  * $this->AssociatedModel->enum(1); // return associated name to key 1.
  * $this->AssociatedModel->enum('name'); // return key 1.
  * $this->AssociatedModel->enumAll(); //return an associative array of all records.
+ * $this->AssociatedModel->enum(array(1, 2); // return associated name to key 1 and 2 (array)
  * 
  * // Bad
  * $this->AssociatedModel->enum('1'); // will not work because '1' is a string
