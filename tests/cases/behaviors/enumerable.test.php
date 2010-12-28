@@ -44,7 +44,8 @@ class EnumerableTestCase extends CakeTestCase {
 		$this->Enum =& new EnumerableBehavior();
 		$this->Job =& new EnumerableJob();
 		$this->Enum->setup($this->Job, array(
-			'cache' => true
+			'cache' => true,
+			'cacheName' => 'default'
 		));
 		parent::startCase();
 	}
@@ -106,6 +107,26 @@ class EnumerableTestCase extends CakeTestCase {
 
 		$result = $this->Enum->enum($job, '1');
 		$this->assertFalse($result, 'If no value exist, this should return false.');
+	}
+	
+	/**
+	 * Test enum with array of keys
+	 * 
+	 * @return void
+	 * @access public
+	 */
+	function testEnumMultipleParam() {
+		$job =& $this->Job;
+
+		$expected = array(1, 2);
+		$input = array('Manager', 'Teacher');
+		$result = $this->Enum->enum($job, $input);
+		$this->assertEqual($expected, $result, 'Multiple entry through array.');
+
+		$expected = array('Manager', 'Teacher');
+		$input = array(1, 2);
+		$result = $this->Enum->enum($job, $input);
+		$this->assertEqual($expected, $result, 'Multiple entry through array. (reverse)');
 	}
 	
 	/**
