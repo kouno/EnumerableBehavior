@@ -43,10 +43,7 @@ class EnumerableTestCase extends CakeTestCase {
 	function startCase() {
 		$this->Enum =& new EnumerableBehavior();
 		$this->Job =& new EnumerableJob();
-		$this->Enum->setup($this->Job, array(
-			'cache' => true,
-			'cacheName' => 'default'
-		));
+		$this->Enum->setup($this->Job, array());
 		parent::startCase();
 	}
 

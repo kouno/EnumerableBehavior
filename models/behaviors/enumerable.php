@@ -183,7 +183,7 @@ class EnumerableBehavior extends ModelBehavior {
 	 */
 	function _getKeys($alias, $values) {
 		$keys = array();
-		foreach($values as $value) {
+		foreach($values as $value) { 
 			$keys[] = $this->_getKey($alias, $value);
 		}
 
