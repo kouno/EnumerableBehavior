@@ -10,7 +10,7 @@
  * @author Vincent Bonmalais <vbonmalais@gmail.com>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  * @copyright Copyright (c) 2010, Vincent Bonmalais
- * @version 0.1.2
+ * @version 0.1.4
  */
 /**
  * Enumerable Behavior is an easy way to manage tables which have only one purpose : replace database enumeration.
@@ -46,9 +46,7 @@ class EnumerableBehavior extends ModelBehavior {
 
 	/**
 	 * Name of the behavior in CakePHP Registry.
-	 * 
-	 * @version 0.1
-	 * @since 0.1
+	 *
 	 * @var string
 	 * @access public
 	 */
@@ -56,9 +54,7 @@ class EnumerableBehavior extends ModelBehavior {
 
 	/**
 	 * Contain settings indexed by model name.
-	 * 
-	 * @version 0.1
-	 * @since 0.1
+	 *
 	 * @var mixed
 	 * @access public
 	 */
@@ -66,9 +62,7 @@ class EnumerableBehavior extends ModelBehavior {
 
 	/**
 	 * Enumerations container.
-	 * 
-	 * @version 0.1
-	 * @since 0.1
+	 *
 	 * @var array
 	 * @access private
 	 */
@@ -76,9 +70,7 @@ class EnumerableBehavior extends ModelBehavior {
 
 	/**
 	 * Start up hooks from the model
-	 * 
-	 * @version 0.1.2
-	 * @since 0.1
+	 *
 	 * @param object &$Model object using this behavior
 	 * @param mixed $settings
 	 * @return void
@@ -103,9 +95,7 @@ class EnumerableBehavior extends ModelBehavior {
 
 	/**
 	 * Get all values.
-	 * 
-	 * @version 0.1.2
-	 * @since 0.1
+	 *
 	 * @param object &$Model object using this behavior
 	 * @param boolean $reset reset cache
 	 * @return mixed associated keys
@@ -148,9 +138,7 @@ class EnumerableBehavior extends ModelBehavior {
 
 	/**
 	 * Get value of the associated key.
-	 * 
-	 * @version 0.1.2
-	 * @since 0.1
+	 *
 	 * @param object &$Model object using this behavior
 	 * @param integer|mixed $value in the enumeration
 	 * @param boolean reset cache
@@ -179,9 +167,7 @@ class EnumerableBehavior extends ModelBehavior {
 	 * This can return mixed value contained in an array. (could be integer or string)
 	 *
 	 * Sub method to refactor some code.
-	 * 
-	 * @version 0.1.2
-	 * @since 0.1.2
+	 *
 	 * @param string $alias
 	 * @param array $values
 	 * @return array keys
@@ -201,11 +187,9 @@ class EnumerableBehavior extends ModelBehavior {
 
 	/**
 	 * Get value of the associated key.
-	 * 
+	 *
 	 * Sub method to refactor some code.
-	 * 
-	 * @version 0.1.2
-	 * @since 0.1.2
+	 *
 	 * @param string $alias
 	 * @param array $values
 	 * @return array keys
