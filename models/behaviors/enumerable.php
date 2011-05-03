@@ -1,12 +1,12 @@
 <?php
 /**
  * Enumerable Behavior class file.
- * 
+ *
  * PHP version 4, 5
- * 
+ *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
- * 
+ *
  * @author Vincent Bonmalais <vbonmalais@gmail.com>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  * @copyright Copyright (c) 2010, Vincent Bonmalais
@@ -15,11 +15,11 @@
 /**
  * Enumerable Behavior is an easy way to manage tables which have only one purpose : replace database enumeration.
  *
- * The goal is to write less code with more meaning. 
- * 
- * Even though it would be probably better to have support for real enum type, it is not supported in CakePHP 
+ * The goal is to write less code with more meaning.
+ *
+ * Even though it would be probably better to have support for real enum type, it is not supported in CakePHP
  * and it seems to be inconsistent between databases.
- * 
+ *
  * <code>
  * <?php
  * // Good
@@ -27,12 +27,12 @@
  * $this->AssociatedModel->enum('name'); // return key 1.
  * $this->AssociatedModel->enumAll(); //return an associative array of all records.
  * $this->AssociatedModel->enum(array(1, 2); // return associated name to key 1 and 2 (array)
- * 
+ *
  * // Bad
  * $this->AssociatedModel->enum('1'); // will not work because '1' is a string
  * ?>
  * </code>
- * 
+ *
  * EnumerableBehavior have a few configuration options :
  * - fieldList : List of fields to be retrieved. (2 fields max) [required if no `displayField` have been set]
  * - conditions : Normal find('list') conditions.
@@ -53,7 +53,7 @@ class EnumerableBehavior extends ModelBehavior {
 	 * @access public
 	 */
 	var $name = 'EnumerableBehavior';
-	
+
 	/**
 	 * Contain settings indexed by model name.
 	 * 
@@ -63,7 +63,7 @@ class EnumerableBehavior extends ModelBehavior {
 	 * @access public
 	 */
 	var $settings = array();
-	
+
 	/**
 	 * Enumerations container.
 	 * 
@@ -91,10 +91,11 @@ class EnumerableBehavior extends ModelBehavior {
 		}
 		$this->settings[$Model->alias] = array_merge(
 			array(
-				'fieldList' => array($Model->primaryKey, $Model->displayField),
-				'conditions' => array(),
 				'cache' => false,
-				'cacheName' => 'default'
+				'cacheName' => 'default',
+				'caseInsensitive' => false,
+				'conditions' => array(),
+				'fieldList' => array($Model->primaryKey, $Model->displayField),
 			),
 			$settings
 		);
@@ -127,6 +128,10 @@ class EnumerableBehavior extends ModelBehavior {
 				'fields' => $this->settings[$Model->alias]['fieldList']
 			));
 
+			if ($this->settings[$Model->alias]['caseInsensitive']) {
+				$this->__enum[$Model->alias] = array_map('strtolower', $this->__enum[$Model->alias]);
+			}
+
 			if ($this->settings[$Model->alias]['cache']) {
 
 				Cache::write(
@@ -155,6 +160,7 @@ class EnumerableBehavior extends ModelBehavior {
 	function enum(&$Model, $value, $reset = false) {
 		if (
 			(!isset($this->__enum[$Model->alias]) && empty($this->__enum[$Model->alias])) ||
+			!$this->settings[$Model->alias]['cache'] ||
 			$reset
 		) {
 			$this->enumAll($Model, $reset);
@@ -163,15 +169,15 @@ class EnumerableBehavior extends ModelBehavior {
 		if (is_array($value)) {
 			return $this->_getKeys($Model->alias, $value);
 		}
-		
+
 		return $this->_getKey($Model->alias, $value);
 	}
 
 	/**
-	 * Get key for each value. 
-	 * 
+	 * Get key for each value.
+	 *
 	 * This can return mixed value contained in an array. (could be integer or string)
-	 * 
+	 *
 	 * Sub method to refactor some code.
 	 * 
 	 * @version 0.1.2
@@ -183,8 +189,11 @@ class EnumerableBehavior extends ModelBehavior {
 	 */
 	function _getKeys($alias, $values) {
 		$keys = array();
-		foreach($values as $value) { 
-			$keys[] = $this->_getKey($alias, $value);
+		foreach($values as $value) {
+			$key = $this->_getKey($alias, $value);
+			if (!empty($key)) {
+				$keys[] = $key;
+			}
 		}
 
 		return $keys;
@@ -207,6 +216,9 @@ class EnumerableBehavior extends ModelBehavior {
 			return $this->__enum[$alias][$value];
 		}
 
+		if ($this->settings[$alias]['caseInsensitive']) {
+			$value = strtolower($value);
+		}
 		return array_search($value, $this->__enum[$alias]);
 	}
 }
