@@ -24,7 +24,7 @@ class EnumerableJob extends CakeTestModel {
 
 /**
  * List of test cases for EnumerableBehavior.
- * 
+ *
  * @package app.tests
  * @subpackage app.tests.cases.behaviors
  */
@@ -32,9 +32,9 @@ class EnumerableTestCase extends CakeTestCase {
 
 	/**
 	 * List of fixtures.
-	 * 
-	 * Use jobs 
-	 * 
+	 *
+	 * Use jobs
+	 *
 	 * @var mixed
 	 * @access public
 	 */
@@ -49,9 +49,9 @@ class EnumerableTestCase extends CakeTestCase {
 
 	/**
 	 * Test find.
-	 * 
+	 *
 	 * A simple verification.
-	 * 
+	 *
 	 * @return void
 	 * @access public
 	 */
@@ -67,7 +67,7 @@ class EnumerableTestCase extends CakeTestCase {
 
 	/**
 	 * Test enumAll.
-	 * 
+	 *
 	 * @return void
 	 * @access public
 	 */
@@ -83,7 +83,7 @@ class EnumerableTestCase extends CakeTestCase {
 
 	/**
 	 * Test enum.
-	 * 
+	 *
 	 * @return void
 	 * @access public
 	 */
@@ -105,10 +105,10 @@ class EnumerableTestCase extends CakeTestCase {
 		$result = $this->Enum->enum($job, '1');
 		$this->assertFalse($result, 'If no value exist, this should return false.');
 	}
-	
+
 	/**
 	 * Test enum with array of keys
-	 * 
+	 *
 	 * @return void
 	 * @access public
 	 */
@@ -164,7 +164,7 @@ class EnumerableTestCase extends CakeTestCase {
 
 	/**
 	 * Test Setup method.
-	 * 
+	 *
 	 * @return void
 	 * @access public
 	 */
