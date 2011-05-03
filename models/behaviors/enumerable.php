@@ -1,25 +1,25 @@
 <?php
 /**
  * Enumerable Behavior class file.
- * 
+ *
  * PHP version 4, 5
- * 
+ *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
- * 
+ *
  * @author Vincent Bonmalais <vbonmalais@gmail.com>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
  * @copyright Copyright (c) 2010, Vincent Bonmalais
- * @version 0.1.2
+ * @version 0.1.4
  */
 /**
  * Enumerable Behavior is an easy way to manage tables which have only one purpose : replace database enumeration.
  *
- * The goal is to write less code with more meaning. 
- * 
- * Even though it would be probably better to have support for real enum type, it is not supported in CakePHP 
+ * The goal is to write less code with more meaning.
+ *
+ * Even though it would be probably better to have support for real enum type, it is not supported in CakePHP
  * and it seems to be inconsistent between databases.
- * 
+ *
  * <code>
  * <?php
  * // Good
@@ -27,12 +27,12 @@
  * $this->AssociatedModel->enum('name'); // return key 1.
  * $this->AssociatedModel->enumAll(); //return an associative array of all records.
  * $this->AssociatedModel->enum(array(1, 2); // return associated name to key 1 and 2 (array)
- * 
+ *
  * // Bad
  * $this->AssociatedModel->enum('1'); // will not work because '1' is a string
  * ?>
  * </code>
- * 
+ *
  * EnumerableBehavior have a few configuration options :
  * - fieldList : List of fields to be retrieved. (2 fields max) [required if no `displayField` have been set]
  * - conditions : Normal find('list') conditions.
@@ -46,29 +46,23 @@ class EnumerableBehavior extends ModelBehavior {
 
 	/**
 	 * Name of the behavior in CakePHP Registry.
-	 * 
-	 * @version 0.1
-	 * @since 0.1
+	 *
 	 * @var string
 	 * @access public
 	 */
 	var $name = 'EnumerableBehavior';
-	
+
 	/**
 	 * Contain settings indexed by model name.
-	 * 
-	 * @version 0.1
-	 * @since 0.1
+	 *
 	 * @var mixed
 	 * @access public
 	 */
 	var $settings = array();
-	
+
 	/**
 	 * Enumerations container.
-	 * 
-	 * @version 0.1
-	 * @since 0.1
+	 *
 	 * @var array
 	 * @access private
 	 */
@@ -76,9 +70,7 @@ class EnumerableBehavior extends ModelBehavior {
 
 	/**
 	 * Start up hooks from the model
-	 * 
-	 * @version 0.1.2
-	 * @since 0.1
+	 *
 	 * @param object &$Model object using this behavior
 	 * @param mixed $settings
 	 * @return void
@@ -91,10 +83,11 @@ class EnumerableBehavior extends ModelBehavior {
 		}
 		$this->settings[$Model->alias] = array_merge(
 			array(
-				'fieldList' => array($Model->primaryKey, $Model->displayField),
-				'conditions' => array(),
 				'cache' => false,
-				'cacheName' => 'default'
+				'cacheName' => 'default',
+				'caseInsensitive' => false,
+				'conditions' => array(),
+				'fieldList' => array($Model->primaryKey, $Model->displayField),
 			),
 			$settings
 		);
@@ -102,9 +95,7 @@ class EnumerableBehavior extends ModelBehavior {
 
 	/**
 	 * Get all values.
-	 * 
-	 * @version 0.1.2
-	 * @since 0.1
+	 *
 	 * @param object &$Model object using this behavior
 	 * @param boolean $reset reset cache
 	 * @return mixed associated keys
@@ -127,6 +118,10 @@ class EnumerableBehavior extends ModelBehavior {
 				'fields' => $this->settings[$Model->alias]['fieldList']
 			));
 
+			if ($this->settings[$Model->alias]['caseInsensitive']) {
+				$this->__enum[$Model->alias] = array_map('strtolower', $this->__enum[$Model->alias]);
+			}
+
 			if ($this->settings[$Model->alias]['cache']) {
 
 				Cache::write(
@@ -143,9 +138,7 @@ class EnumerableBehavior extends ModelBehavior {
 
 	/**
 	 * Get value of the associated key.
-	 * 
-	 * @version 0.1.2
-	 * @since 0.1
+	 *
 	 * @param object &$Model object using this behavior
 	 * @param integer|mixed $value in the enumeration
 	 * @param boolean reset cache
@@ -155,6 +148,7 @@ class EnumerableBehavior extends ModelBehavior {
 	function enum(&$Model, $value, $reset = false) {
 		if (
 			(!isset($this->__enum[$Model->alias]) && empty($this->__enum[$Model->alias])) ||
+			!$this->settings[$Model->alias]['cache'] ||
 			$reset
 		) {
 			$this->enumAll($Model, $reset);
@@ -163,19 +157,17 @@ class EnumerableBehavior extends ModelBehavior {
 		if (is_array($value)) {
 			return $this->_getKeys($Model->alias, $value);
 		}
-		
+
 		return $this->_getKey($Model->alias, $value);
 	}
 
 	/**
-	 * Get key for each value. 
-	 * 
+	 * Get key for each value.
+	 *
 	 * This can return mixed value contained in an array. (could be integer or string)
-	 * 
+	 *
 	 * Sub method to refactor some code.
-	 * 
-	 * @version 0.1.2
-	 * @since 0.1.2
+	 *
 	 * @param string $alias
 	 * @param array $values
 	 * @return array keys
@@ -183,8 +175,11 @@ class EnumerableBehavior extends ModelBehavior {
 	 */
 	function _getKeys($alias, $values) {
 		$keys = array();
-		foreach($values as $value) { 
-			$keys[] = $this->_getKey($alias, $value);
+		foreach($values as $value) {
+			$key = $this->_getKey($alias, $value);
+			if (!empty($key)) {
+				$keys[] = $key;
+			}
 		}
 
 		return $keys;
@@ -192,11 +187,9 @@ class EnumerableBehavior extends ModelBehavior {
 
 	/**
 	 * Get value of the associated key.
-	 * 
+	 *
 	 * Sub method to refactor some code.
-	 * 
-	 * @version 0.1.2
-	 * @since 0.1.2
+	 *
 	 * @param string $alias
 	 * @param array $values
 	 * @return array keys
@@ -207,6 +200,9 @@ class EnumerableBehavior extends ModelBehavior {
 			return $this->__enum[$alias][$value];
 		}
 
+		if ($this->settings[$alias]['caseInsensitive']) {
+			$value = strtolower($value);
+		}
 		return array_search($value, $this->__enum[$alias]);
 	}
 }
