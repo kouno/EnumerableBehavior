@@ -91,10 +91,11 @@ class EnumerableBehavior extends ModelBehavior {
 		}
 		$this->settings[$Model->alias] = array_merge(
 			array(
-				'fieldList' => array($Model->primaryKey, $Model->displayField),
-				'conditions' => array(),
 				'cache' => false,
-				'cacheName' => 'default'
+				'cacheName' => 'default',
+				'caseInsensitive' => false,
+				'conditions' => array(),
+				'fieldList' => array($Model->primaryKey, $Model->displayField),
 			),
 			$settings
 		);
@@ -127,6 +128,10 @@ class EnumerableBehavior extends ModelBehavior {
 				'fields' => $this->settings[$Model->alias]['fieldList']
 			));
 
+			if ($this->settings[$Model->alias]['caseInsensitive']) {
+				$this->__enum[$Model->alias] = array_map('strtolower', $this->__enum[$Model->alias]);
+			}
+
 			if ($this->settings[$Model->alias]['cache']) {
 
 				Cache::write(
@@ -155,6 +160,7 @@ class EnumerableBehavior extends ModelBehavior {
 	function enum(&$Model, $value, $reset = false) {
 		if (
 			(!isset($this->__enum[$Model->alias]) && empty($this->__enum[$Model->alias])) ||
+			!$this->settings[$Model->alias]['cache'] ||
 			$reset
 		) {
 			$this->enumAll($Model, $reset);
@@ -183,8 +189,11 @@ class EnumerableBehavior extends ModelBehavior {
 	 */
 	function _getKeys($alias, $values) {
 		$keys = array();
-		foreach($values as $value) { 
-			$keys[] = $this->_getKey($alias, $value);
+		foreach($values as $value) {
+			$key = $this->_getKey($alias, $value);
+			if (!empty($key)) {
+				$keys[] = $key;
+			}
 		}
 
 		return $keys;
@@ -207,6 +216,9 @@ class EnumerableBehavior extends ModelBehavior {
 			return $this->__enum[$alias][$value];
 		}
 
+		if ($this->settings[$alias]['caseInsensitive']) {
+			$value = strtolower($value);
+		}
 		return array_search($value, $this->__enum[$alias]);
 	}
 }

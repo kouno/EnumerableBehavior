@@ -125,7 +125,43 @@ class EnumerableTestCase extends CakeTestCase {
 		$result = $this->Enum->enum($job, $input);
 		$this->assertEqual($expected, $result, 'Multiple entry through array. (reverse)');
 	}
-	
+
+	/**
+	 * Test if enum is case sensitive or not.
+	 *
+	 * @return void
+	 * @access public
+	 */
+	function testEnumIsCaseInsensitive() {
+		$job =& $this->Job;
+
+		/* This is the default configuration. This setup is just here to make it explicit. */
+		$this->Enum->setup($this->Job, array(
+			'caseInsensitive' => false,
+			'cache' => false
+		));
+
+		$expected = array(1);
+		$input = array('Manager');
+		$result = $this->Enum->enum($job, $input, true);
+		$this->assertEqual($expected, $result, 'Enum case sensitive test (normal case).');
+
+		$expected = array();
+		$input = array('manager');
+		$result = $this->Enum->enum($job, $input);
+		$this->assertEqual($expected, $result, 'Enum should be case sensitive.');
+
+		$this->Enum->setup($this->Job, array(
+			'caseInsensitive' => true,
+			'cache' => false
+		));
+
+		$expected = array(1, 2);
+		$input = array('manager', 'TeAcHer');
+		$result = $this->Enum->enum($job, $input, true);
+		$this->assertEqual($expected, $result, 'Enum should not be case sensitive.');
+	}
+
 	/**
 	 * Test Setup method.
 	 * 
